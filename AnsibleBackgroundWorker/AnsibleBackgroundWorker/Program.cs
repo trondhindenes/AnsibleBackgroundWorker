@@ -37,22 +37,35 @@ public class SynchronousSocketListener {
             while (true) {  
                 Console.WriteLine("Waiting for a connection...");  
                 // Program is suspended while waiting for an incoming connection.  
-                Socket handler = listener.Accept();  
+                Socket handler = listener.Accept();
+                handler.SendBufferSize = 1024;
+                handler.ReceiveBufferSize = 10485760;
                 data = null;  
   
                 // An incoming connection needs to be processed.  
+
                 while (true) {  
                     int bytesRec = handler.Receive(bytes);  
                     data += Encoding.ASCII.GetString(bytes,0,bytesRec);
                     //Console.WriteLine( "Current string buffer: {0}", data);
-                    if (data.IndexOf("\r\n") > -1) {  
+                    if (data.IndexOf("ANSIBLE_TCP_WINRM_END_END_END") > -1) {  
                         break;  
                     }  
-                }  
+                }
+
+                data = data.Replace("ANSIBLE_TCP_WINRM_END_END_END", "");
+
+/*                int recv;
+                while((recv = handler.Receive(bytes)) > 0)
+                {
+                    // process recv-many bytes
+                    // ... stringData = Encoding.ASCII.GetString(data, 0, recv);
+                    data = Encoding.ASCII.GetString(bytes,0,recv);
+                }*/
   
                 // Show the data on the console.    
                 // Echo the data back to the client.
-                Console.WriteLine( "Text received : {0}", data);
+                Console.WriteLine( "Text received");
                 using (PowerShell ps = PowerShell.Create())
                 { 
                     //ps.Runspace = rs;
@@ -60,7 +73,9 @@ public class SynchronousSocketListener {
                     var psResult = ps.Invoke();
                     foreach (var psResultItem in psResult)
                     {
-                        byte[] msg = Encoding.ASCII.GetBytes(psResultItem.ToString());
+                        var strMessage = psResultItem.BaseObject.ToString();
+                        //Console.WriteLine(strMessage);
+                        byte[] msg = Encoding.ASCII.GetBytes(strMessage);
                         handler.Send(msg);  
                     } 
                 }
@@ -79,7 +94,7 @@ public class SynchronousSocketListener {
   
     }  
   
-    [STAThread]
+    //[STAThread]
     public static int Main(String[] args) {  
         StartListening();  
         return 0;  
