@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/98lwepn3wmghrpnx?svg=true)](https://ci.appveyor.com/project/trondhindenes/ansiblebackgroundworker)
+
 # AnsibleBackgroundWorker
 
 WARNING: RESEARCH STAGE. DO NOT RUN IN PRODUCTION
