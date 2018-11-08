@@ -6,4 +6,4 @@ before_build:
 build:
   verbosity: minimal
 artifacts:
-- path: '**\*.exe'
+- path: 'AnsibleBackgroundWorker\AnsibleBackgroundWorker\bin\Debug\AnsibleBackgroundWorker.exe'
