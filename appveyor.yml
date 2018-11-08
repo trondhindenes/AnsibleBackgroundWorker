@@ -1,0 +1,7 @@
+version: 1.0.{build}
+image: Previous Visual Studio 2017
+before_build:
+- cmd: cd ANsibleBackgroundWorker
+- cmd: nuget restore
+build:
+  verbosity: minimal
